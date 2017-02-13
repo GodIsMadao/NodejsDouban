@@ -1,0 +1,23 @@
+extend ../layout
+
+block content
+	.container
+		.row
+			.col-md-7
+				//- <embed>是html5新特性,html播放
+				embed(src="#{movie.flash}",allowFullScreen="true",quality="high",width="720",height="600",align="middle",type="application/x-shockwave-flash")
+				//- img(src="#{movie.poster}",width="720",height="600")
+			.col-md-5
+				.dl-horizontal
+					dt 电影名字
+					dt=movie.title
+					dt 导演
+					dt=movie.doctor
+					dt 国家
+					dt=movie.contry
+					dt 语言
+					dt=movie.language
+					dt 上映年份
+					dt=movie.year
+					dt 简介 
+					dt=movie.summary
