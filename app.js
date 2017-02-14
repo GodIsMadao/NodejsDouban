@@ -6,13 +6,15 @@ var path = require('path');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Movie = require('./models/movie');
+var bodyParser = require("body-parser");
+
 var port = process.env.PORT || 3000;
 var app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/movies");
-
-app.use(require('body-parser').urlencoded({extended: true}));
+mongoose.connect("mongodb://localhost:27017/movie");
+app.use(bodyParser.urlencoded({extended:true}));
+// app.use(require('body-parser').urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'bower_components')));//静态文件配置的目录
 app.set('views','./views/pages');
 app.set('view engine','jade');
@@ -27,9 +29,8 @@ app.get('/',function(req,res){
         if(err){
             console.log(err);
         }
-
         res.render('index',{
-            title:'imooc 首页',
+            title:'爱看不看首页',
             movies: movies
         });
     })
@@ -40,21 +41,24 @@ app.get('/',function(req,res){
 app.get('/movie/:id', function(req, res) {
     var id = req.params.id;
     Movie.findById(id,function (err, movie) {
+        console.log("来来来，先看这里："+movie+","+movie.title)
         if(err){
             console.log(err);
         }
 
+        console.log("来来来，再看这里："+movie+","+movie.title)
         res.render('detail', {
-            title: 'imooc ' + movie.title,
+            title: '爱看不看:' + movie.title,
             movie: movie
         })
+
     })
 })
 
 //admin page
 app.get('/admin/movie', function(req, res) {
     res.render('admin', {
-        title: 'imooc 后台录入页',
+        title: '爱看不看后台录入页',
         movie: {
             title: '',
             doctor: '',
@@ -75,7 +79,7 @@ app.get('/admin/update/:id',function (req, res) {
     if (id) {
         Movie.findById(id, function (err,movie) {
             res.render('admin',{
-                title:'imooc 后台更新页',
+                title:'爱看不看后台更新页',
                 movie:movie
             })
 
@@ -85,7 +89,13 @@ app.get('/admin/update/:id',function (req, res) {
 
 //admin post movie
 app.post('/admin/movie/new',function (req, res) {
+	console.log("req.body:"+req.body)
+	console.log("req.body.movie:"+req.body.movie)
+	console.log("req.body.movie.title:"+req.body.movie.title)
+	console.log("req.body.movie.doctor:"+req.body.movie.doctor)
+	console.log("req.body.movie.language:"+req.body.movie.language)
     var id = req.body.movie._id;
+    console.log("id为:"+id)
     var movieObj = req.body.movie;
     var _movie ;
     if(id!==undefined && id !== "" && id !== null){
@@ -136,7 +146,7 @@ app.get('/admin/list', function(req, res) {
         }
 
         res.render('list',{
-            title:'imooc 列表页',
+            title:'爱看不看列表页',
             movies: movies
         });
     });
