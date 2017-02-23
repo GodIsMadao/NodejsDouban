@@ -24,7 +24,7 @@ app.listen(port);
 console.log('imooc start:'+ port);
 
 //index page
-app.get('/',function(req,res){
+app.get('/index',function(req,res){
     Movie.fetch(function (err, movies) {
         if(err){
             console.log(err);
