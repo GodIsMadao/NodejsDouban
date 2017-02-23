@@ -1,0 +1,11 @@
+{
+  "name": "NodejsDouban",
+  "version": "1.0.0",
+  "devDependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "grunt": "^1.0.1",
+    "grunt-concurrent": "^2.3.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-nodemon": "^0.4.2"
+  }
+}

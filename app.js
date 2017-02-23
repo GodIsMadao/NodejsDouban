@@ -6,8 +6,8 @@ var path = require('path');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Movie = require('./models/movie');
+var user = require('./models/user');
 var bodyParser = require("body-parser");
-
 var port = process.env.PORT || 3000;
 var app = express();
 
@@ -15,7 +15,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost:27017/movie");
 app.use(bodyParser.urlencoded({extended:true}));
 // app.use(require('body-parser').urlencoded({extended: true}));
-app.use(express.static(path.join(__dirname, 'bower_components')));//静态文件配置的目录
+app.use(express.static(path.join(__dirname, 'public')));//静态文件配置的目录
 app.set('views','./views/pages');
 app.set('view engine','jade');
 app.locals.moment = require('moment')
@@ -36,6 +36,14 @@ app.get('/',function(req,res){
     })
 
 } );
+
+//sign up
+
+app.post('/user/signup',function (req,res) {
+    // body...
+    var _user = req.body.user
+    console.log(_user)
+})
 
 //detail page
 app.get('/movie/:id', function(req, res) {
@@ -151,3 +159,21 @@ app.get('/admin/list', function(req, res) {
         });
     });
 });
+
+//delete page
+app.delete('/admin/list',function(req,res){
+    var id = req.query.id
+//http://localhost:3000/admin/list?id=58a2625acd8bda2720813ec7 
+// req.query.id获取?id=后面的id内容，然后通过后面语句删除对应内容
+    if(id){
+        Movie.remove({_id:id},function(err,movie){
+            if(err){
+                console.log(err)
+            }
+            else{
+                res.json({success:1})
+            }
+        })
+
+    }
+})
