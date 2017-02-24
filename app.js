@@ -8,7 +8,7 @@ var _ = require('underscore');
 var Movie = require('./models/movie');
 var user = require('./models/user');
 var bodyParser = require("body-parser");
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 80;
 var app = express();
 
 mongoose.Promise = global.Promise;
