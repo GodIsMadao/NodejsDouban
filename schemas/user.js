@@ -19,6 +19,8 @@ var UserSchema = new mongoose.Schema({
         }
     }
 });
+
+
 UserSchema.pre('save', function (next) {
   var user = this;
   if (this.isNew) {
@@ -30,14 +32,29 @@ UserSchema.pre('save', function (next) {
   this.password = hash;
   next();
 });
-  
+
+
 UserSchema.methods = {
-  comparePassword: function (_password, cb) {
-    var hash = this.password;
-    var isMatch = bcrypt.compareSync(_password, hash);
-      cb(null, isMatch);
-    }
-};
+  comparePassword : function(_password,cb){
+    bcrypt.compare(_password,this.password,function(err,isMatch){
+      if(err){
+        return cb(err)
+      }
+
+      cb(null,isMatch)
+    })
+  }
+
+}  
+
+// UserSchema.methods = {
+//   comparePassword: function (_password, cb) {
+//     var hash = this.password;
+//     var isMatch = bcrypt.compareSync(_password, hash);
+//       cb(null, isMatch);
+//     }
+// };
+
 
 UserSchema.statics = {
     fetch: function (cb) {

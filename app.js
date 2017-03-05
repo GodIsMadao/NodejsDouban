@@ -11,7 +11,7 @@ var bodyParser = require("body-parser");
 var port = process.env.PORT || 3000;
 var app = express();
 
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise; 
 mongoose.connect("mongodb://localhost:27017/movie");
 app.use(bodyParser.urlencoded({extended:true}));
 // app.use(require('body-parser').urlencoded({extended: true}));
@@ -42,15 +42,26 @@ app.get('/',function(req,res){
 app.post('/user/signup',function (req,res) {
     // body...
     var _user = req.body.user
-    var user = new User(_user)
     // console.log(user)
-
-    user.save(function(err,user){
+    User.findOne({name: _user.name},function (err,user) {
+        // body...
         if(err){
             console.log(err)
         }
 
-        res.redirect('/admin/userList')
+        if(user){
+            return res.redirect('/')
+        }
+        else{
+            var user = new User(_user)
+
+            user.save(function(err,user){
+                if(err){
+                    console.log(err)
+                }
+                res.redirect('/admin/userList')
+            })
+        }
     })
 })
 
@@ -67,6 +78,40 @@ app.get('/admin/userList', function(req, res) {
         });
     });
 });
+
+//sign in
+app.post('/user/signin',function  (req,res) {
+    // body...
+    var _user = req.body.user
+    var name = _user.name
+    var password = _user.password
+
+    User.findOne({name: name},function  (err,user) {
+        // body...
+        if(err){
+            console.log(err)
+        }
+
+        if(!user){
+            return res.redirect('/')
+        }
+
+        user.comparePassword(password,function  (err,isMatch) {
+            // body...
+            if(err){
+                console.log(err)
+            }
+
+            if(isMatch){
+                console.log('password is matched!')
+                return res.redirect('/admin/userList')
+            }else{
+                console.log('password is not matched!')
+                return res.redirect('/')
+            }
+        })
+    })
+})
 
 //detail page
 app.get('/movie/:id', function(req, res) {
