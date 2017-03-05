@@ -19,28 +19,25 @@ var UserSchema = new mongoose.Schema({
         }
     }
 });
-
-UserSchema.pre('save',function(next){
-    if(this.isNew){
-        this.meta.createAt = this.meta.updateAat = Date.now()
-    }
-    else{
-        this.meta.updateAt = Date.now()
-    }
-
-    bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
-        if(err)return next(err)
-
-            bcrypt.hash(user.password,salt,function (err,salt) {
-                if(err) return next(err)
-
-                user.password=hash
-                next()
-            })
-    })
-
-    next()
+UserSchema.pre('save', function (next) {
+  var user = this;
+  if (this.isNew) {
+    this.meta.createAt = this.meta.updateAt = Date.now();
+  } else {
+    this.meta.updateAt = Date.now();
+  }
+  var hash = bcrypt.hashSync(this.password);
+  this.password = hash;
+  next();
 });
+  
+UserSchema.methods = {
+  comparePassword: function (_password, cb) {
+    var hash = this.password;
+    var isMatch = bcrypt.compareSync(_password, hash);
+      cb(null, isMatch);
+    }
+};
 
 UserSchema.statics = {
     fetch: function (cb) {

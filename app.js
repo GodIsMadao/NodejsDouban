@@ -6,9 +6,9 @@ var path = require('path');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Movie = require('./models/movie');
-var user = require('./models/user');
+var User = require('./models/user');
 var bodyParser = require("body-parser");
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 3000;
 var app = express();
 
 mongoose.Promise = global.Promise;
@@ -42,8 +42,31 @@ app.get('/',function(req,res){
 app.post('/user/signup',function (req,res) {
     // body...
     var _user = req.body.user
-    console.log(_user)
+    var user = new User(_user)
+    // console.log(user)
+
+    user.save(function(err,user){
+        if(err){
+            console.log(err)
+        }
+
+        res.redirect('/admin/userList')
+    })
 })
+
+//user list page
+app.get('/admin/userList', function(req, res) {
+    Movie.fetch(function (err, users) {
+        if(err){
+            console.log(err);
+        }
+
+        res.render('userlist',{
+            title:'用户列表',
+            users: users
+        });
+    });
+});
 
 //detail page
 app.get('/movie/:id', function(req, res) {

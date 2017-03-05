@@ -28,10 +28,10 @@ module.exports = function(grunt){
 	               watch: ['./'],
 	               delay: 1000,
 	               env: {
-	                    PORT: '80'
+	                    PORT: '3000'
 	               },
 	               cwd: __dirname
-		        }
+		        }	
 			}
 		},
 
