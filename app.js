@@ -56,7 +56,7 @@ app.post('/user/signup',function (req,res) {
 
 //user list page
 app.get('/admin/userList', function(req, res) {
-    Movie.fetch(function (err, users) {
+    User.fetch(function (err, users) {
         if(err){
             console.log(err);
         }
